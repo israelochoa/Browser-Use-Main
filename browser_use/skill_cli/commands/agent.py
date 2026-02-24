@@ -209,7 +209,9 @@ async def _handle_local_task(session: SessionInfo, params: dict[str, Any]) -> An
 				}
 			return {
 				'success': False,
-				'error': 'No LLM configured. Set BROWSER_USE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY, or GOOGLE_API_KEY',
+				'error': 'No LLM configured. Set BROWSER_USE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY, or GOOGLE_API_KEY. '
+				'If you only want manual browsing without APIs, use browser commands like: '
+				'open, state, click, type, and screenshot.',
 			}
 
 		# Create and run agent
