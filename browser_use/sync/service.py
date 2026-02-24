@@ -13,6 +13,16 @@ from browser_use.sync.auth import TEMP_USER_ID, DeviceAuthClient
 logger = logging.getLogger(__name__)
 
 
+EVENT_SYNC_FLAGS = {
+	'CreateAgentSessionEvent': 'BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_SESSION',
+	'CreateAgentTaskEvent': 'BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_TASK',
+	'CreateAgentStepEvent': 'BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_STEP',
+	'UpdateAgentTaskEvent': 'BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_TASK',
+	'CreateAgentOutputFileEvent': 'BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_OUTPUT_FILE',
+	'UpdateAgentSessionEvent': 'BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_SESSION',
+}
+
+
 class CloudSync:
 	"""Service for syncing events to the Browser Use cloud"""
 
@@ -31,6 +41,12 @@ class CloudSync:
 		try:
 			# If cloud sync is disabled, don't handle any events
 			if not self.enabled:
+				return
+
+			# Check per-event sync flags so users can selectively disable sync by event type
+			event_flag_name = EVENT_SYNC_FLAGS.get(event.event_type)
+			if event_flag_name and not bool(getattr(CONFIG, event_flag_name, True)):
+				logger.debug(f'Skipping event {event.event_type} - {event_flag_name}=False')
 				return
 
 			# Extract session ID from CreateAgentSessionEvent
@@ -153,6 +169,7 @@ class CloudSync:
 			import logging
 
 			logger = logging.getLogger(__name__)
+
 			if show_instructions:
 				logger.info('✅ Already authenticated! Skipping OAuth flow.')
 			return True
