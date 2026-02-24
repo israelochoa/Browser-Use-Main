@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from browser_use.skill_cli.sessions import SessionInfo
+from browser_use.skill_cli.url_utils import normalize_navigation_url
 
 logger = logging.getLogger(__name__)
 
@@ -83,10 +84,7 @@ async def handle(action: str, session: SessionInfo, params: dict[str, Any]) -> A
 	bs = session.browser_session
 
 	if action == 'open':
-		url = params['url']
-		# Ensure URL has scheme
-		if not url.startswith(('http://', 'https://', 'file://')):
-			url = 'https://' + url
+		url = normalize_navigation_url(params['url'])
 
 		from browser_use.browser.events import NavigateToUrlEvent
 

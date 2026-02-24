@@ -146,6 +146,10 @@ uvx browser-use init --template default --output my_agent.py
 Fast, persistent browser automation from the command line:
 
 ```bash
+# If browser-use is not installed globally, prefix commands with: uv run
+uv run browser-use open https://example.com
+
+# Once installed in your active environment, you can use:
 browser-use open https://example.com    # Navigate to URL
 browser-use state                       # See clickable elements
 browser-use click 5                     # Click element by index
@@ -153,6 +157,17 @@ browser-use type "Hello"                # Type text
 browser-use screenshot page.png         # Take screenshot
 browser-use close                       # Close browser
 ```
+
+For URLs, include the full protocol (`https://`), e.g. `https://google.com`.
+
+**Want to only browse manually (no API keys yet)?**
+```bash
+uv run browser-use open https://google.com
+uv run browser-use state
+uv run browser-use click 1
+uv run browser-use type "hello"
+```
+You can explore pages with these browser commands first, then run agent tasks later after configuring an LLM key.
 
 The CLI keeps the browser running between commands for fast iteration. See [CLI docs](browser_use/skill_cli/README.md) for all commands.
 
