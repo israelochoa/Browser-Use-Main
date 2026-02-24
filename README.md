@@ -187,11 +187,12 @@ For URLs, include the full protocol (`https://`), e.g. `https://google.com`.
 
 **Want to only browse manually (no API keys yet)?**
 ```bash
-uv run browser-use --headed open https://google.com
-uv run browser-use state
-uv run browser-use click 1
-uv run browser-use type "hello"
+uv run --active browser-use --headed open https://google.com
+uv run --active browser-use state
+uv run --active browser-use click 1
+uv run --active browser-use type "hello"
 ```
+If `uv` warns that `VIRTUAL_ENV` does not match the project `.venv`, use `--active` as shown above.
 You can explore pages with these browser commands first, then run agent tasks later after configuring an LLM key.
 
 The CLI keeps the browser running between commands for fast iteration. See [CLI docs](browser_use/skill_cli/README.md) for all commands.

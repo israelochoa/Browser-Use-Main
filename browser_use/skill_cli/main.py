@@ -18,6 +18,8 @@ import tempfile
 import time
 from pathlib import Path
 
+from browser_use.skill_cli.utils import get_log_path
+
 # =============================================================================
 # Early command interception (before heavy imports)
 # These commands don't need the session server infrastructure
@@ -228,6 +230,7 @@ def ensure_server(session: str, browser: str, headed: bool, profile: str | None,
 				try:
 					meta = json.loads(meta_path.read_text())
 					existing_mode = meta.get('browser_mode', 'chromium')
+					existing_headed = bool(meta.get('headed', False))
 					if existing_mode != browser:
 						# Only error if user explicitly requested 'remote' but session is local
 						# This prevents losing cloud features (live_url, etc.)
@@ -245,6 +248,15 @@ def ensure_server(session: str, browser: str, headed: bool, profile: str | None,
 								file=sys.stderr,
 							)
 							sys.exit(1)
+					elif headed and not existing_headed and browser == existing_mode:
+						print(
+							f"Warning: Session '{session}' is already running headless, so no window will appear.",
+							file=sys.stderr,
+						)
+						print(
+							'Run `browser-use close` first, then re-run with `--headed` to start a visible browser window.',
+							file=sys.stderr,
+						)
 				except (json.JSONDecodeError, OSError):
 					pass  # Metadata file corrupt, ignore
 
@@ -320,6 +332,15 @@ def ensure_server(session: str, browser: str, headed: bool, profile: str | None,
 		time.sleep(0.05)
 
 	print('Error: Failed to start session server', file=sys.stderr)
+	if headed and sys.platform != 'win32' and not (env.get('DISPLAY') or env.get('WAYLAND_DISPLAY')):
+		print(
+			'Hint: --headed requires a desktop display session. DISPLAY/WAYLAND_DISPLAY is not set. '
+			'Try running without --headed, or start from a GUI terminal.',
+			file=sys.stderr,
+		)
+	log_path = get_log_path(session)
+	if log_path.exists():
+		print(f'See server logs: browser-use --session {session} server logs', file=sys.stderr)
 	sys.exit(1)
 
 
@@ -1226,18 +1247,17 @@ def main() -> int:
 			# Show mode for browser-related commands (first line of output)
 			if args.command in ('open', 'run'):
 				print(f'mode: {args.browser}')
-				if args.command in ('open', 'run'):
-					meta_path = get_session_metadata_path(args.session)
-					session_is_headed = False
-					if meta_path.exists():
-						try:
-							meta = json.loads(meta_path.read_text())
-							session_is_headed = bool(meta.get('headed', False))
-						except (json.JSONDecodeError, OSError):
-							pass
-					if not session_is_headed:
-						print('tip: browser is running headless (without visible window).')
-						print('tip: run `browser-use close` then `browser-use --headed open <url>` before browsing or running an agent to see the browser window.')
+				meta_path = get_session_metadata_path(args.session)
+				session_is_headed = False
+				if meta_path.exists():
+					try:
+						meta = json.loads(meta_path.read_text())
+						session_is_headed = bool(meta.get('headed', False))
+					except (json.JSONDecodeError, OSError):
+						pass
+				if not session_is_headed:
+					print('tip: browser is running headless (without visible window).')
+					print('tip: run `browser-use close` then `browser-use --headed open <url>` before browsing or running an agent to see the browser window.')
 			if data is not None:
 				if isinstance(data, dict):
 					# Special case: raw text output (e.g., state command)
