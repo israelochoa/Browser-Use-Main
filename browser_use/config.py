@@ -63,6 +63,30 @@ class OldConfig:
 		return os.getenv('BROWSER_USE_CLOUD_SYNC', str(self.ANONYMIZED_TELEMETRY)).lower()[:1] in 'ty1'
 
 	@property
+	def BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_SESSION(self) -> bool:
+		return os.getenv('BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_SESSION', 'true').lower()[:1] in 'ty1'
+
+	@property
+	def BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_TASK(self) -> bool:
+		return os.getenv('BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_TASK', 'true').lower()[:1] in 'ty1'
+
+	@property
+	def BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_STEP(self) -> bool:
+		return os.getenv('BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_STEP', 'true').lower()[:1] in 'ty1'
+
+	@property
+	def BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_TASK(self) -> bool:
+		return os.getenv('BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_TASK', 'true').lower()[:1] in 'ty1'
+
+	@property
+	def BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_OUTPUT_FILE(self) -> bool:
+		return os.getenv('BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_OUTPUT_FILE', 'true').lower()[:1] in 'ty1'
+
+	@property
+	def BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_SESSION(self) -> bool:
+		return os.getenv('BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_SESSION', 'true').lower()[:1] in 'ty1'
+
+	@property
 	def BROWSER_USE_CLOUD_API_URL(self) -> str:
 		url = os.getenv('BROWSER_USE_CLOUD_API_URL', 'https://api.browser-use.com')
 		assert '://' in url, 'BROWSER_USE_CLOUD_API_URL must be a valid URL'
@@ -193,6 +217,12 @@ class FlatEnvConfig(BaseSettings):
 	BROWSER_USE_INFO_LOG_FILE: str | None = Field(default=None)
 	ANONYMIZED_TELEMETRY: bool = Field(default=True)
 	BROWSER_USE_CLOUD_SYNC: bool | None = Field(default=None)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_SESSION: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_TASK: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_STEP: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_TASK: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_OUTPUT_FILE: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_SESSION: bool = Field(default=True)
 	BROWSER_USE_CLOUD_API_URL: str = Field(default='https://api.browser-use.com')
 	BROWSER_USE_CLOUD_UI_URL: str = Field(default='')
 
