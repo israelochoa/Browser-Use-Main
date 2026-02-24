@@ -223,7 +223,6 @@ class FlatEnvConfig(BaseSettings):
 	BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_TASK: bool = Field(default=True)
 	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_OUTPUT_FILE: bool = Field(default=True)
 	BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_SESSION: bool = Field(default=True)
-
 	BROWSER_USE_CLOUD_API_URL: str = Field(default='https://api.browser-use.com')
 	BROWSER_USE_CLOUD_UI_URL: str = Field(default='')
 

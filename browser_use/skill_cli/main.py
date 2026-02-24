@@ -1226,6 +1226,18 @@ def main() -> int:
 			# Show mode for browser-related commands (first line of output)
 			if args.command in ('open', 'run'):
 				print(f'mode: {args.browser}')
+				if args.command in ('open', 'run'):
+					meta_path = get_session_metadata_path(args.session)
+					session_is_headed = False
+					if meta_path.exists():
+						try:
+							meta = json.loads(meta_path.read_text())
+							session_is_headed = bool(meta.get('headed', False))
+						except (json.JSONDecodeError, OSError):
+							pass
+					if not session_is_headed:
+						print('tip: browser is running headless (without visible window).')
+						print('tip: run `browser-use close` then `browser-use --headed open <url>` before browsing or running an agent to see the browser window.')
 			if data is not None:
 				if isinstance(data, dict):
 					# Special case: raw text output (e.g., state command)
