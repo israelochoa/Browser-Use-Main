@@ -72,6 +72,7 @@ import asyncio
 
 async def main():
     browser = Browser(
+        headless=False,  # Show browser window while the agent runs
         # use_cloud=True,  # Use a stealth browser on Browser Use Cloud
     )
 
@@ -88,9 +89,39 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+If your keys are stored in `.env` (for example `GOOGLE_API_KEY` for Gemini), load them before creating the model:
+```python
+from dotenv import load_dotenv
+load_dotenv()
+```
+
 Check out the [library docs](https://docs.browser-use.com) and the [cloud docs](https://docs.cloud.browser-use.com) for more!
 
 <br/>
+
+### 👀 Can I see the browser while the agent runs?
+
+Yes—this is independent of model choice.
+
+- Use any supported model (for example `ChatBrowserUse`, `ChatGoogle`, `ChatAnthropic`, etc.).
+- To see the browser UI, run headed mode:
+  - Python API: `Browser(headless=False)`
+  - CLI: `browser-use --headed ...`
+- Element highlighting/boxes come from browser profile settings (`highlight_elements`), not from a specific model.
+
+Example with a Google model:
+
+```python
+from browser_use import Agent, Browser, ChatGoogle
+
+browser = Browser(headless=False)
+agent = Agent(
+    task="Find the top post on Hacker News",
+    llm=ChatGoogle(model='gemini-flash-latest'),
+    browser=browser,
+)
+```
+
 
 # Demos
 
@@ -146,6 +177,10 @@ uvx browser-use init --template default --output my_agent.py
 Fast, persistent browser automation from the command line:
 
 ```bash
+# If browser-use is not installed globally, prefix commands with: uv run
+uv run browser-use open https://example.com
+
+# Once installed in your active environment, you can use:
 browser-use open https://example.com    # Navigate to URL
 browser-use state                       # See clickable elements
 browser-use click 5                     # Click element by index
@@ -153,6 +188,18 @@ browser-use type "Hello"                # Type text
 browser-use screenshot page.png         # Take screenshot
 browser-use close                       # Close browser
 ```
+
+For URLs, include the full protocol (`https://`), e.g. `https://google.com`.
+
+**Want to only browse manually (no API keys yet)?**
+```bash
+uv run --active browser-use --headed open https://google.com
+uv run --active browser-use state
+uv run --active browser-use click 1
+uv run --active browser-use type "hello"
+```
+If `uv` warns that `VIRTUAL_ENV` does not match the project `.venv`, use `--active` as shown above.
+You can explore pages with these browser commands first, then run agent tasks later after configuring an LLM key.
 
 The CLI keeps the browser running between commands for fast iteration. See [CLI docs](browser_use/skill_cli/README.md) for all commands.
 

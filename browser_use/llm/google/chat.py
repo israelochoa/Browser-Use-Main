@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import os
 import random
 import time
 from dataclasses import dataclass, field
@@ -124,9 +125,11 @@ class ChatGoogle(BaseChatModel):
 
 	def _get_client_params(self) -> dict[str, Any]:
 		"""Prepare client parameters dictionary."""
+		api_key = self.api_key or os.getenv('GOOGLE_API_KEY') or os.getenv('GEMINI_API_KEY')
+
 		# Define base client params
 		base_params = {
-			'api_key': self.api_key,
+			'api_key': api_key,
 			'vertexai': self.vertexai,
 			'credentials': self.credentials,
 			'project': self.project,
@@ -136,6 +139,13 @@ class ChatGoogle(BaseChatModel):
 
 		# Create client_params dict with non-None values
 		client_params = {k: v for k, v in base_params.items() if v is not None}
+
+		is_vertex_mode = bool(self.vertexai) or bool(self.credentials) or bool(self.project and self.location)
+		if not api_key and not is_vertex_mode:
+			raise ModelProviderError(
+				'No Google API key found. Set GOOGLE_API_KEY (or GEMINI_API_KEY), ' 
+				'or pass api_key to ChatGoogle(...). If you store keys in .env, call load_dotenv() first.'
+			)
 
 		return client_params
 
