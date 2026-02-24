@@ -26,6 +26,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
+from browser_use.skill_cli.url_utils import normalize_navigation_url
 
 if TYPE_CHECKING:
 	from cdp_use import CDPClient
@@ -591,9 +592,7 @@ Flags:
 
 	# ── open: lightweight if reconnecting, full session if first launch ──
 	if command == 'open' and len(args) >= 2:
-		url = args[1]
-		if not url.startswith(('http://', 'https://', 'file://')):
-			url = 'https://' + url
+		url = normalize_navigation_url(args[1])
 
 		state = _load_state()
 		if state.get('cdp_url'):
