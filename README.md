@@ -89,6 +89,12 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+If your keys are stored in `.env` (for example `GOOGLE_API_KEY` for Gemini), load them before creating the model:
+```python
+from dotenv import load_dotenv
+load_dotenv()
+```
+
 Check out the [library docs](https://docs.browser-use.com) and the [cloud docs](https://docs.cloud.browser-use.com) for more!
 
 <br/>
