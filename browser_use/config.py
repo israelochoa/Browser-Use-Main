@@ -191,8 +191,15 @@ class FlatEnvConfig(BaseSettings):
 	CDP_LOGGING_LEVEL: str = Field(default='WARNING')
 	BROWSER_USE_DEBUG_LOG_FILE: str | None = Field(default=None)
 	BROWSER_USE_INFO_LOG_FILE: str | None = Field(default=None)
-	ANONYMIZED_TELEMETRY: bool = Field(default=True)
+	ANONYMIZED_TELEMETRY: bool = Field(default=False)
 	BROWSER_USE_CLOUD_SYNC: bool | None = Field(default=None)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_SESSION: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_TASK: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_STEP: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_TASK: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_CREATE_AGENT_OUTPUT_FILE: bool = Field(default=True)
+	BROWSER_USE_CLOUD_SYNC_EVENT_UPDATE_AGENT_SESSION: bool = Field(default=True)
+
 	BROWSER_USE_CLOUD_API_URL: str = Field(default='https://api.browser-use.com')
 	BROWSER_USE_CLOUD_UI_URL: str = Field(default='')
 
